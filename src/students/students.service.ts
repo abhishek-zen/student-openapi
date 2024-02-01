@@ -9,8 +9,11 @@ export class StudentsService {
     @InjectModel('Student') private readonly studentModel: Model<StudentDto>,
   ) {}
 
-  async findAll(): Promise<StudentDto[]> {
-    return this.studentModel.find().exec();
+  async findAll(name?: string, age?: number): Promise<StudentDto[]> {
+    const filters: Partial<StudentDto> = {};
+    if (name) {filters.name = name;}
+    if (age) {filters.age = age;}
+    return this.studentModel.find(filters).exec();
   }
 
   async findOne(studentId: string): Promise<StudentDto | null> {

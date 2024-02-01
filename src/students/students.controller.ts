@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query } from '@nestjs/common';
 import { StudentsService } from './students.service';
 import { StudentDto } from './student.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 
 @ApiTags('students')
 @Controller('students')
@@ -10,8 +10,16 @@ export class StudentsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all students' })
-  async findAll(): Promise<StudentDto[]> {
+  async getAllStudents(): Promise<StudentDto[]> {
     return this.studentsService.findAll();
+  }
+
+  @Get('filter')
+  @ApiOperation({ summary: 'Filter students by name or age'  })
+  @ApiQuery({ name: 'name', required: false, description: 'Filter by name' })
+  @ApiQuery({ name: 'age', required: false, description: 'Filter by age' })
+  async findAll(@Query('name') name?: string, @Query('age') age?: number): Promise<StudentDto[]> {
+    return this.studentsService.findAll(name, age);
   }
 
   @Get(':studentId')
